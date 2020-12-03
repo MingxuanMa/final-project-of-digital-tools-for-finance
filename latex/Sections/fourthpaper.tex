@@ -1,0 +1,27 @@
+\subsection{\citetitle{tütüncü_koenig_2004}}
+To solve the problem of unreliable structure of returns, \cite{tütüncü_koenig_2004} choose a way to robust asset allocation by choosing the most pessimistic view of robustness to find a solution that has the best performance under its worst case. In the paper, instead of the point estimates used in classical mean-variance problem, they use an uncertainty set which covers most possible values that the input parameter can reach to describe the uncertainty of the optimization problem.\\
+The intuition of the method used in this paper is to address the following problem: What choice of the variables will optimize the worst case objective value? That is, under different choices of variables, this approach considers the worst case inputs in the uncertainty set and pick the set of variable which gives the best worst-case performances.\\
+The steps of the worst-case strategy developed in this paper are as follows:
+\begin{enumerate}
+  \item Solve 
+    \begin{equation}
+    \begin{aligned}
+        \min \max_{Q\in U_Q} \quad & x^{T}Qx\\
+        \textrm{s.t.} \quad & x\in \chi\\
+        & w^TQw \leq v\\
+    \end{aligned}
+    \end{equation}
+    \begin{equation}
+    \min_{\mu \in U_\mu} \mu^Tx\geq R\textrm{,}\\
+    \end{equation}
+    without the expected return constraint, using a saddle point algorithm. $x_{min}$ denotes the optimal solution and use $R_{min}=(\mu^L)^Tx_{min}$ going forward
+  \item Solve
+     \begin{equation}
+        \max \min_{Q\in U_Q,\mu\in U_\mu} \mu^Tx-\lambda x^TQx\\
+     \end{equation}
+    with $\lambda=0$. $x_{max}$ denotes the optimal solution and use $R_{max}=(\mu^L)^Tx_{max}$ going forward
+  \item Choose K as the desired points on the efficient frontier and divide the interval $[R_{min},R_{max}]$ into K pieces
+  \item Use the endpoints of intervals as the expected return constraint to solve the optimization problem using a saddle point algorithm
+\end{enumerate}
+The authors stretch, that this technique possesses three properties. It takes a very conservative view by assuming a significant worst-case scenario; it provides stability over time since the portfolio weights remain relatively unchanged over a period of time; and it concentrates weights on a small set of asset classes. The first two properties are desirable and expected, but the third one comes with a surprise. \\
+The worst-case robust asset management strategy overcomes some of the weakness of classical mean-variance optimization, especially suitable for conservative investors and investors who prefer to buy and hold the position for a long horizon.

@@ -1,0 +1,20 @@
+\subsection{\citetitle{ceria_stubbs_2006}}
+As seen previously, two potential improvements to \citeauthor{markowitz_1952}'s approach are an increased risk aversion parameter, which would minimise the over-estimation of the efficient frontier; and statistical re-sampling, that considers errors by averaging individual optimal portfolio's with respect to randomly generated expected return and risk estimators. However, both approaches have some flaws. An increased risk-parameter still assumes that the covariance matrix of the estimation error is a constant multiple of the matrix of returns; and the re-sampling approach is based on ad-hoc methodology, that is fairly time-consuming and doesn't satisfy all constraints.\\
+Therefore, \cite{ceria_stubbs_2006} propose robust optimisation to consider uncertainty in parameters. The authors show, that with conventional methods, tiny estimation errors yield dramatic changes in the weights of the assets in the portfolio. They call this the error-maximisation effect. To solve this, they suggest the following maximization problem (here shown with conditions for a long-only robust portfolio that satisfies a budget and a variance constraint):
+\begin{equation}
+\begin{aligned}
+\max_w \quad & \bar{\alpha}^Tw-\kappa\norm{\Sigma^{1/2}w}\\
+\textrm{s.t.} \quad & e^Tw=1\\
+  & w^TQw \leq v\\
+  & w \geq 0\textrm{,}\\
+\end{aligned}
+\end{equation}
+whereby $\bar{\alpha}$ stands for an estimate of expected returns; $w$ for the vector of weights; $\kappa$ for a confidence parameter, $\Sigma$ for the variance-covariance matrix; $e$ for a budget; $v$ for a variance target and $Q$ for the covariance matrix of returns, not obtained by the estimates but in practice obtained from a risk model provider.\\
+This formula is the same as the one for a classical mean-variance optimization problem, aside from the inclusion of $\kappa\norm{\Sigma^{1/2}w}$. This term reduces the effect of the estimation error on the optimal portfolio. In relation to the conventional optimization problem, the term's presence would adjust the expected return of assets with positive weights downwards and vice versa.\\
+The scholars also propose alternative forms of their robust portfolio optimization.
+This is necessary, because the basic version only adjust estimates of expected returns downwards if long-only constraints are present. Otherwise, an alpha downwards-adjustment for an asset with an already negative weight, would become overly negative.
+The solution is a zero net alpha-adjustment frontier (see equation 15 of \cite{ceria_stubbs_2006} for a detailed description), whereby, in the case of being fully invested, a portfolio weight which is above the optimum gets alpha-adjusted downwards and vice versa.
+Another alternative is the robust active return/active risk frontier (equation 18 of the \citeauthor{ceria_stubbs_2006} paper), that uses benchmark weights as a determinant for holdings in an asset and whether to adjust up or downwards.
+Lastly, the authors suggest to use what they call a general robust optimization framework (equation 19 of \cite{ceria_stubbs_2006}), that compiles all previously mentioned models and permits for the construction of other alternatives.\\
+In their paper, the authors demonstrate mathematically that the true and 
+estimated frontiers lie closer together with robust optimization. Also, they show empirically how both curves move closer to the true efficient frontier with data from 30 US equities with various strategies (long-short dollar neutral strategy, long-only maximum return strategy and long-only active strategy) and how they outperform classical approaches.\\

@@ -1,0 +1,13 @@
+\subsection{Resampling}
+Among the practitioners that tackled the aforementioned problem was \citeauthor{michaud_1998}, who patented his Resampled Efficiency techniques (cf. \cite{michaud_1998}) in 1998. Just under a decade later, \cite{michaud_2007} extended this Resampled Efficiency solution formally, by showing that it is a Bayesian-based generalization of Markowitz’s approach. Their solution is based on Monte Carlo simulations to account for parameter uncertainty in mean-variance portfolio optimization.
+In their later paper (\cite{michaud_2007}), the scholars argue that, while the theoretical idea behind Markovitz's portfolio optimization is correct, the model relies too heavily on inadequate data and is therefor fairly susceptible.
+In their opinion, models tend to rely too extremely on data that does not have sufficient predictive power and do not account for parameter and estimation uncertainty.
+To address these issues, their proposed Resampled Efficiency portfolios uses bootstrapping and are constructed by a conventional Monte Carlo algorithm that follows the following basic steps:
+\begin{enumerate}
+  \item Randomly sample means and covariance matrix of returns, with the center of these estimations being the regular values used in conventional mean-variance optimizations
+  \item Calculate the mean-variance efficient frontier based on these sampled risk and return estimates
+  \item Do this repeatedly to construct a big data set
+  \item Average portfolio weights from all these generated data points
+\end{enumerate}
+The scholars show, that the resulting portfolio is more conservative and underperforms in-sample; but outperforms out-of-sample. Optionally, additional constrains can be added.\\
+ 

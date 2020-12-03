@@ -1,0 +1,48 @@
+% Author - Jon Arnt Kårstad, NTNU IMT
+\documentclass{article}
+
+% Importing settings from our file "setup.sty"
+\usepackage{setup}
+
+% Beginning of document
+\begin{document}
+
+% Inserting title page
+\import{./}{title}
+
+% Defining front matter settings (Norsk: innstillinger for forord m.m.)
+\frontmatter
+
+% Inserting supporting documents
+\tableofcontents
+
+\newpage
+\listoffigures
+
+%\newpage
+%\listoftables
+
+% Defining main matter settings
+\mainmatter
+
+% Introduction explaining this LaTeX-template
+\import{./Sections/}{Introduction}
+
+\import{./Sections/}{Literature Review}
+
+\import{./Sections/}{Research Question}
+
+\import{./Sections/}{Theoretical Framework}
+
+\import{./Sections/}{Empirical Analysis}
+
+\import{./Sections/}{Conclusion}
+
+
+% Printing bibliography
+\newpage
+\printbibliography[heading = bibintoc, title = Bibliography]
+
+
+% End of document
+\end{document}

@@ -1,0 +1,67 @@
+\section{Theoretical Framework}\label{methodology}
+In the following the mathematical framework for our replication study of \cite{anderson_cheng_2016} is outlined. For further information and more detail we refer to their paper. \\
+In each time period $t$ both parameters and model probabilities are updated. After this process the assets are allocated accordingly where the optimization function accounts for uncertainty.
+\subsection{Initialization}
+In period 1 we initialize mean, covariance and model- and scaling parameters.
+\begin{align*}
+\bar\mu_{t-1} &= \frac{1}{n}\sum_{i=1}^{n}(\frac{1}{t-1}\sum_{s=1}^{t-1} R_{i,s})\\
+\bar \lambda_{t-1} &= \frac{1}{n}\sum_{i=1}^{n}(\frac{1}{t-2}\sum_{s=1}^{t-1}(R_{i,s}-\bar\mu_{i,t-1})^2)\\
+ \kappa_{t,t-1} &= 1,  \delta_{t,t-1} = 1, \tau = 4 \text{ and } \alpha = 1
+\end{align*}
+\subsection{Updating parameters in each t}
+At each point in time the mean and covariance matrix for all existing previous models is updated, using the newly observed excess returns $R_t$.
+\begin{align*}
+\mu_{m,t} &= \frac{\kappa_{m,t-1}\mu_{m,t-1} + R_t}{\kappa_{m,t}}\\
+\Sigma_{m,t} &= \frac{\delta_{m,t-1}\kappa_{m,t}\Sigma_{m,t-1}+\kappa_{m,t-1}(R_t - \mu_{m,t-1} )(R_t - \mu_{m,t-1})'}{\delta_{m,t}\kappa_{m,t}}
+\end{align*}
+With $\kappa_{m,t} = \kappa_{m,t-1} + 1$ and $\delta_{m,t} =\delta_{m,t-1} + 1 $, which can be viewed as scaling parameters that define the weight put on more recent inputs.
+
+\subsection{Updating probabilities for each model m in each t}
+At each point in time the probability that a model is correct gets updated for each existing model, using the newly observed excess returns $R_t$. This can be done with Bayes rule. \\
+\begin{align*}
+P_t(m | F_t) &= \frac{L(R_t | m, F_{t-1})P_t(m|F_{t-1})}{\sum_{m \in M_t} L(R_t | m, F_{t-1})P_t(m|F_{t-1})}
+\end{align*}
+\\
+where the likelihood can be expressed as follows.\\
+\begin{align*}
+ L(R_t | m, F_{t-1}) &= \frac{ \kappa_{m,t-1}^{n/2} \det(\Lambda_{m,t-1}^{\nu_{m,t-1}/2}) \Gamma_n (\nu_{m,t-1}/2)}{\pi^{n/2} \kappa_{m,t}^{n/2} \det(\Lambda_{m,t}^{\nu_{m,t}/2}) \Gamma_n (\nu_{m,t-1}/2) }
+\end{align*}
+With $\Lambda_{m,t} = \delta_{m,t}\Sigma_{m,t}$ and $\nu_{m,t} = \delta_{m,t} + n + 1$ and $\Gamma_n(x)$ stands for the multivariate Gamma function. \\
+As for the prior we chose the "Sharing prior" which allows to set the fraction $\alpha$ that each model shares with its own past and with the other models. We chose $\alpha = 1$ which represents the perfect sharing prior where older and newer models have equal probabilities. \\
+\begin{align*}
+    P_t(m | F_{t-1})=\left\{
+                \begin{array}{ll}
+                  (1-\alpha) P_{t-1}(m |F_{t-1} + \alpha [\sum_{q=1}^{m} (\frac{1}{t-q+1}) P_{t-1}(q | F_{t-1})]), &\text{if }m<t\\
+                  \alpha[\sum_{q=1}^{t-1}(\frac{1}{t-q+1})P_{t-1}(q | F_{t-1})],  &\text{if } m=t
+                \end{array}
+              \right.
+\end{align*}
+
+
+\subsection{Allocate assets in each t}
+The model accounts for potential miss specification and future uncertainty by taking into account estimation error and parameter uncertainty. To optimally allocate assets in each time period we solve the following robust mean-variance optimization problem. 
+\begin{align*}
+\max_{\phi_t}(\phi_{t}'\hat{\mu} + R_{ft+1} - \frac{1}{\tau}\int \text{exp} [-\tau(\phi_{t}'z_{t+1})^2]f(z_{t+1} | F_t)d z_{t+1})
+\end{align*}
+where $\phi_t$ represent the optimal portfolio weights. This integral can be approximated numerically with the following equations. 
+\begin{align*}
+\int \text{exp} [-\tau(\phi_{t}'z_{t+1})^2]f(z_{t+1} | F_t)d z_{t+1} = \sum_{m \in M_t} U_{m,t}P_t(m|F_t)
+\end{align*}
+where
+\begin{align*}
+    U_{m,t} =\left\{
+                \begin{array}{ll}
+                  \frac{1}{\sqrt{q_{m,t}}} \text{exp} [\frac{\tau^2 \phi_{t}' \bar{\Sigma}_{m,t} \phi_t - 2 \tau \xi_{m,t} + \theta \tau \xi_{m,t}^2}{2 q_{m,t}}], &\text{when  } q > t\\
+                  + \infty,  &\text{when } q_{m,t} \leq 0
+                \end{array}
+              \right.
+\end{align*}
+with $q_{m,t} = 1 - \theta \tau \phi_{t}'\bar{\Sigma}_{m,t} \phi_t$ and $\xi = \phi_{t}'(\mu_{m,t} - \hat{\mu_t})$.\\
+The optimal portfolio weights $\phi_t$ can be calculated as follows.
+\begin{align*}
+\phi_t &= \frac{1}{\theta}\hat{\Sigma}_t^{-1}\hat{\mu}_t &\text{where }\\
+\hat{\Sigma}_{t} &= V(R_{t+1} | F_t)= \sum_{m \in M_t} (\bar{\Sigma}_{m,t} + \mu_{m,t}\mu_{m,t}')'P_t(m|F_t)-\hat{\mu}_t \hat{\mu_t}' &\text{with }\\
+\bar{\Sigma}_{m,t} &= V(R_{t+1} |m, F_t) = \Big(\frac{1+\kappa_{m,t}}{\kappa_{m,t}}\Big) \Sigma_{m,t}& \text{and }\\
+\hat{\mu}_t & = E(R_{t+1} |F_t) = \sum_{m \in M_t} \mu_{m,t} P_t(m | F_t)
+\end{align*}
+Next periods excess returns are observed based on the portfolio created in this instance. 
