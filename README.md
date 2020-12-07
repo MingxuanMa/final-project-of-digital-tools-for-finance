@@ -6,6 +6,8 @@ Our project is divided into the following sections:
 
 Code: codefile has the code which replicates robust bayesian model and compares its performance with the other two benchmark models. 
 
+Data: contains the risk-free rate from 2005 to 2020 since we uses a time-varing riak-free rate. We regards 1-year T bill rate as risk free and convert it to daily rate. 
+
 Latex: contains two parts; the folder "paper" contains latex file which builds the paper; the folder "presentation" contains the beamer file which builds the presentation file. 
 
 Jupyter: contains the jupyter notebook which performs the output of our code, including multiple periods optimization results and figures. 
