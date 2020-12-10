@@ -1,0 +1,220 @@
+\documentclass{beamer}
+
+\mode<presentation>{
+\usetheme{Dresden}
+\setbeamercovered{transparent}
+\usecolortheme{lsc}
+}
+
+\mode<handout>{
+  % tema simples para ser impresso
+  \usepackage[bar]{beamerthemetree}
+  % Colocando um fundo cinza quando for gerar transparências para serem impressas
+  % mais de uma transparência por página
+  \beamertemplatesolidbackgroundcolor{black!5}
+}
+
+\usepackage{amsmath,amssymb}
+\usepackage[brazil]{varioref}
+\usepackage[english,brazil]{babel}
+\usepackage[utf8]{inputenc}
+%\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{colortbl}
+
+\beamertemplatetransparentcovereddynamic
+
+\title[Quantitative Asset Management]{Final Project of Digital Tools for Finance}
+\author[Mingxuan Ma, Yuke Xing, Yiyi Jiang]{%
+  Autor: \\
+  Mingxuan Ma, Yuke Xing, Yiyi Jiang }
+  \institute[UZH]{%
+     University of Zurich}
+
+% Se comentar a linha abaixo, irá aparecer a data quando foi compilada a apresentação  
+\date{10/12/2020}
+
+\pgfdeclareimage[height=0.8cm]{inf}{figs/uzh_logo.jpg}
+% pode-se colocar o LOGO assim
+
+\pgfuseimage{inf}
+
+\AtBeginSection[]{
+  \begin{frame}<beamer>
+    \frametitle{Contents}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Contents}
+\tableofcontents
+\end{frame}
+
+
+\section{Introduction}
+
+\frame{
+    \frametitle{Introduction}
+    \begin{itemize}   
+       \item Our project is a replication of paper:
+       \begin{itemize}
+           \item Anderson E W, Cheng A R. Robust bayesian portfolio choices[J]. The Review of Financial Studies, 2016, 29(5): 1330-1375. 
+       \end{itemize}
+       
+       \item Replicate the robust Bayesian model and compare its performance.
+       \begin{itemize}
+       	   \item with equally weighted model and standard Markowitz model on S&P 500 daily stock return from 2005 to 2020
+       \end{itemize}
+   \end{itemize}
+}
+
+
+\section{Literature Review}
+\frame{
+    \frametitle{Literature Review}
+    \begin{itemize}   
+       \item Modern Portfolio Theory 
+       \item Resampling
+       \item ‘Robust Bayesian Portfolio Choices’
+       \item ‘Incorporating estimation errors into portfolio selection: Robust portfolio construction’
+       \item ‘Robust Asset Allocation’
+   \end{itemize}
+}
+
+\section{Research Question}
+\frame{
+    \frametitle{Research Question}
+   Can ‘Robust Bayesian Portfolio Choices’ yield superior returns in an environment of extreme financial markets?
+}
+
+
+\section{Theoretical Framework}
+\frame{
+    \frametitle{Theoretical Framework}
+   \begin{itemize}   
+       \item Initialization
+       \item Updating parameters in each t
+       \item Updating probabilities for each model m in each t
+       \item Allocate assets in each t
+   \end{itemize}
+}
+
+
+\frame{
+    \frametitle{Initialization}
+    In period 1 we initialize mean, covariance and model- and scaling parameters.
+   \begin{align*}
+        \bar\mu_{t-1} &= \frac{1}{n}\sum_{i=1}^{n}(\frac{1}{t-1}\sum_{s=1}^{t-1} R_{i,s})\\
+        \bar \lambda_{t-1} &= \frac{1}{n}\sum_{i=1}^{n}(\frac{1}{t-2}\sum_{s=1}^{t-1}(R_{i,s}-\bar\mu_{i,t-1})^2)\\
+        \kappa_{t,t-1} &= 1,  \delta_{t,t-1} = 1, \tau = 4 \text{ and } \alpha = 1
+    \end{align*}
+}
+
+\frame{
+    \frametitle{Updating parameters in each t}
+    At each point in time the mean and covariance matrix for all existing previous models is updated, using the newly observed excess returns $R_t$.
+    \begin{align*}
+        \mu_{m,t} &= \frac{\kappa_{m,t-1}\mu_{m,t-1} + R_t}{\kappa_{m,t}}\\
+         \Sigma_{m,t} &= \frac{\delta_{m,t-1}\kappa_{m,t}\Sigma_{m,t-1}+\kappa_{m,t-1}(R_t - \mu_{m,t-1} )(R_t - \mu_{m,t-1})'}{\delta_{m,t}\kappa_{m,t}}
+    \end{align*}
+    With $\kappa_{m,t} = \kappa_{m,t-1} + 1$ and $\delta_{m,t} =\delta_{m,t-1} + 1 $, which can be viewed as scaling parameters that define the weight put on more recent inputs.
+}
+
+
+\frame{
+    \frametitle{Updating probabilities for each model m in each t}
+        \begin{align*}
+            P_t(m | F_t) &= \frac{L(R_t | m, F_{t-1})P_t(m|F_{t-1})}{\sum_{m \in M_t} L(R_t | m, F_{t-1})P_t(m|F_{t-1})}
+        \end{align*}
+\\
+        \begin{align*}
+            L(R_t | m, F_{t-1}) &= \frac{ \kappa_{m,t-1}^{n/2} \det(\Lambda_{m,t-1}^{\nu_{m,t-1}/2}) \Gamma_n (\nu_{m,t-1}/2)}{\pi^{n/2} \kappa_{m,t}^{n/2} \det(\Lambda_{m,t}^{\nu_{m,t}/2}) \Gamma_n (\nu_{m,t-1}/2) }
+        \end{align*}
+\\
+        \begin{align*}
+            P_t(m | F_{t-1})=\left\{
+                        \begin{array}{ll}
+                          (1-\alpha) P_{t-1}(m |F_{t-1} + \alpha [\sum_{q=1}^{m} (\frac{1}{t-q+1}) P_{t-1}(q | F_{t-1})]), &\text{if }m<t\\
+                          \alpha[\sum_{q=1}^{t-1}(\frac{1}{t-q+1})P_{t-1}(q | F_{t-1})],  &\text{if } m=t
+                        \end{array}
+                      \right.
+        \end{align*}
+
+}
+
+\frame{
+    \frametitle{Allocate assets in each t}
+    The optimal portfolio weights $\phi_t$ can be calculated as follows.
+    \begin{align*}
+        \phi_t &= \frac{1}{\theta}\hat{\Sigma}_t^{-1}\hat{\mu}_t &\text{where }\\
+        \hat{\Sigma}_{t} &= V(R_{t+1} | F_t)= \sum_{m \in M_t} (\bar{\Sigma}_{m,t} + \mu_{m,t}\mu_{m,t}')'P_t(m|F_t)-\hat{\mu}_t \hat{\mu_t}' &\text{with }\\
+        \bar{\Sigma}_{m,t} &= V(R_{t+1} |m, F_t) = \Big(\frac{1+\kappa_{m,t}}{\kappa_{m,t}}\Big) \Sigma_{m,t}& \text{and }\\
+        \hat{\mu}_t & = E(R_{t+1} |F_t) = \sum_{m \in M_t} \mu_{m,t} P_t(m | F_t)
+    \end{align*}
+    Next periods excess returns are observed based on the portfolio created in this instance. 
+}
+
+\section{Empirical Analysis}
+\frame{
+    \frametitle{Empirical Analysis Results}
+        \centering
+        \pgfdeclareimage[height=5.5cm]{sharpe}{figs/sharpe.png}
+    \pgfuseimage{sharpe}
+    \\
+    
+     \begin{tiny}
+            (sharpe-ratio at t+1 from October 2008 to March 2009)
+    \end{tiny}
+}
+
+\frame{
+    \frametitle{Empirical Analysis Results}
+    \centering
+        \pgfdeclareimage[height=5.5cm]{return}{figs/return.png}
+    %TODO fig RM
+
+    \pgfuseimage{return}
+    \\
+    
+     \begin{tiny}
+            (portfolio return at t+1 from October 2008 to March 2009)
+    \end{tiny}
+
+}
+\frame{
+    \frametitle{Empirical Analysis Results}
+        \centering
+    	\begin{columns}
+\column{3.3cm}
+         \pgfdeclareimage[width=4cm]{1}{figs/Figure_prior.png}
+          \pgfuseimage{1}\\
+          
+\column{3.3cm}
+  \pgfdeclareimage[width=4cm]{2}{figs/Figure_prior2.png}
+  \pgfuseimage{2}\\
+
+\column{3.3cm}
+  \pgfdeclareimage[width=4cm]{3}{figs/Figure_prior3.png}
+  \pgfuseimage{3}\\
+ 
+\end{columns}
+}
+
+
+\section{Conclusion}
+\frame{
+    \frametitle{Conclusion}
+   Our main finding is that, with a small portfolio (N=30) and large rolling window (T=100), the robust bayesian model outperforms the other two before 2012, and this outperforming effect vanishes after 2012 when the paper is submitted. Also, we finds an interesting phenonmenon: robust bayesian model dominates the other two regardless of portfolio size from 2008 September to 2009 March, which is the period of financial crisis. A possible explanation could be that during crisis period, investors put more weight on prior information. Since investors are more likely to sell a stock which has a negative return yesterday due to panic rather than rational analysis during crisis period, prior information plays a more important role.
+}
+
+
+\end{document}
