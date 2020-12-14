@@ -6,7 +6,7 @@ Our project is divided into the following sections:
 
 Code: codefile has the code which replicates robust bayesian model and compares its performance with the other two benchmark models. 
 
-Data: 1. contains the risk-free rate from 2005 to 2020 since we uses a time-varing risk-free rate. We regards 1-year T bill rate as risk free and convert it to daily rate. 2. contains S&P 500 daily stock return from 2005 to 2020.
+Data: 1. contains the risk-free rate from 2005 to 2020 since we uses a time-varing risk-free rate. We regards 1-year T bill rate as risk free and convert it to daily rate. 2. contains S&P 500 daily stock return from 2005 to 2020. 3. contains a folder named "database" which includes MYSQL code and a jupyter notebook to access the database. 
 
 Latex: 1. the folder "paper" contains latex file which builds the paper. 2. the folder "presentation" contains the beamer file which builds the presentation file. 
 
